@@ -12,16 +12,17 @@
 #include <SPI.h>
 #include <SD.h>
 #include <TinyGPS++.h>
+#include <mqtt.h>
 
 class SETUP_CLASS{
 private:
-
-    const char* filename = "/data_sd.txt";
 
     bool isCreated = false;
 
     void SERIAL_MONITOR();
     void MICRO_SD();
+    void WIFI();
+    void MQTT();
 
 public:
     SETUP_CLASS();

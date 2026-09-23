@@ -14,18 +14,17 @@
 #include <setup.h>
 #include <task_handler.h>
 
+//kontainer primer
+
 SETUP_CLASS SETUP_INSTANCE;
 HANDLE_TASK TASK;
+
+//kontainer wifi dan mqtt ada di mqtt.cpp
 
 void setup(){
   SETUP_INSTANCE.BEGIN();
 }
 
 void loop(){
-	if(Serial.available() > 0){
-		String inputdata = Serial.readStringUntil('\n');
-		inputdata.trim();
-		TASK.WRITE_TO_MICRO_SD(inputdata);
-		TASK.READ_FROM_MICRO_SD();
-	}
+	TASK.UPDATE_MQTT();
 }

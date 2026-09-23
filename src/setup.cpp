@@ -22,7 +22,7 @@ void SETUP_CLASS::MICRO_SD(){
     }
     else{
         //refersh data di sd card
-        File refresh = SD.open(filename, FILE_READ);
+        File refresh = SD.open(MICRO_SD_CARD_FILE, FILE_READ);
         if(refresh){
             while(refresh.available()){
                 refresh.read();
@@ -34,10 +34,28 @@ void SETUP_CLASS::MICRO_SD(){
     }
 }
 
+void SETUP_CLASS::WIFI(){
+    Serial.println(F("[debug] Mulai Koneksi Wifi"));
+    
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    while(WiFi.status() != WL_CONNECTED){
+        delay(1000);
+        Serial.print(".");
+    }
+    Serial.println(WiFi.localIP());
+}
+
+void SETUP_CLASS::MQTT(){
+    initMQTT();
+}
+
 //main setup line
 void SETUP_CLASS::BEGIN(){
     SERIAL_MONITOR();
     MICRO_SD();
+    WIFI();
+    MQTT();
 
     Serial.println(F("[debug] Primary setup OKE"));
     delay(1000);

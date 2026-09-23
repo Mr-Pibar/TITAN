@@ -9,8 +9,8 @@ HANDLE_TASK::HANDLE_TASK(){
     }
 }
 
-void HANDLE_TASK::WRITE_TO_MICRO_SD(String inputdata){
-    File fileWrite = SD.open(filename, FILE_APPEND);
+void HANDLE_TASK::SERIAL_WRITE_TO_MICRO_SD(String inputdata){
+    File fileWrite = SD.open(MICRO_SD_CARD_FILE, FILE_APPEND);
     if(fileWrite){
         fileWrite.println(inputdata);
         fileWrite.close();
@@ -21,8 +21,8 @@ void HANDLE_TASK::WRITE_TO_MICRO_SD(String inputdata){
     }
 }
 
-void HANDLE_TASK::READ_FROM_MICRO_SD(){
-    File fileRead = SD.open(filename, FILE_READ);
+void HANDLE_TASK::SERIAL_READ_FROM_MICRO_SD(){
+    File fileRead = SD.open(MICRO_SD_CARD_FILE, FILE_READ);
     if(fileRead){
         Serial.println(F("====[READING SD CARD]===="));
         while(fileRead.available()){
@@ -33,5 +33,58 @@ void HANDLE_TASK::READ_FROM_MICRO_SD(){
     }
     else{
         Serial.println(F("[debug] FAIL READING"));
+    }
+}
+
+void HANDLE_TASK::STREAM_TO_WEB(PubSubClient* client_esp){
+    if(!SD.exists(MICRO_SD_CARD_FILE)){
+        Serial.println(F("[debug] tidak ada database"));
+        return;
+    }
+    
+    File data = SD.open(MICRO_SD_CARD_FILE, FILE_READ);
+    if(!data || data.size() == 0){
+        Serial.println(F("[debug] ada databse, tidak ada data"));
+        if(data){
+            data.close();
+        }
+        return;
+    }
+    Serial.println(F("[debug] Memulai Streaming data ke WEB...."));
+    while(data.available()){
+        String line = data.readStringUntil('\n');
+        line.trim();
+        if(line.length() > 0){
+            client_esp->publish(MQTT_TO_WEB, line.c_str());
+            delay(50);
+        }
+    }
+    data.close();
+    Serial.println(F("[debug] streaming data selesai"));
+}
+
+void HANDLE_TASK::DELETE_DATA_SD(){
+    if(SD.exists(MICRO_SD_CARD_FILE)){
+        if(SD.remove(MICRO_SD_CARD_FILE)){
+            Serial.println(F("[debug] Database di hapus"));
+        }
+        else{
+            Serial.println(F("[debug] database gagal dihapus"));
+        }
+    }
+    else{
+        Serial.println(F("[debug] Tidak ada database"));
+    }
+}
+
+void HANDLE_TASK::UPDATE_MQTT(){
+    reconnectMQTT();
+    updateMQTT();
+}
+
+void HANDLE_TASK::FETCH_DATA_WEB(){
+    int dataweb = Data_From_Web();
+    if(dataweb == 1){
+
     }
 }
