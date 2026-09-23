@@ -46,16 +46,16 @@ void SETUP_CLASS::WIFI(){
     Serial.println(WiFi.localIP());
 }
 
-void SETUP_CLASS::MQTT(){
-    initMQTT();
+void SETUP_CLASS::MQTT(WiFiClientSecure &ESP_WIFI, PubSubClient &clientESP){
+    initMQTT(ESP_WIFI, clientESP);
 }
 
 //main setup line
-void SETUP_CLASS::BEGIN(){
+void SETUP_CLASS::BEGIN(WiFiClientSecure &ESP_WIFI, PubSubClient &clientESP){
     SERIAL_MONITOR();
     MICRO_SD();
     WIFI();
-    MQTT();
+    MQTT(ESP_WIFI, clientESP);
 
     Serial.println(F("[debug] Primary setup OKE"));
     delay(1000);

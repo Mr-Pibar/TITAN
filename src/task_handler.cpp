@@ -36,7 +36,7 @@ void HANDLE_TASK::SERIAL_READ_FROM_MICRO_SD(){
     }
 }
 
-void HANDLE_TASK::STREAM_TO_WEB(PubSubClient* client_esp){
+void HANDLE_TASK::STREAM_TO_WEB(PubSubClient &client_esp){
     if(!SD.exists(MICRO_SD_CARD_FILE)){
         Serial.println(F("[debug] tidak ada database"));
         return;
@@ -55,7 +55,7 @@ void HANDLE_TASK::STREAM_TO_WEB(PubSubClient* client_esp){
         String line = data.readStringUntil('\n');
         line.trim();
         if(line.length() > 0){
-            client_esp->publish(MQTT_TO_WEB, line.c_str());
+            client_esp.publish(MQTT_TO_WEB, line.c_str());
             delay(50);
         }
     }
@@ -77,14 +77,22 @@ void HANDLE_TASK::DELETE_DATA_SD(){
     }
 }
 
-void HANDLE_TASK::UPDATE_MQTT(){
-    reconnectMQTT();
-    updateMQTT();
+void HANDLE_TASK::UPDATE_MQTT(PubSubClient &client_esp){
+    if(!client_esp.connected()){
+        reconnectMQTT(client_esp);
+    }
+    updateMQTT(client_esp);
 }
 
-void HANDLE_TASK::FETCH_DATA_WEB(){
-    int dataweb = Data_From_Web();
+void HANDLE_TASK::FETCH_DATA_WEB(PubSubClient &client_esp){
+    int dataweb = data_From_Web();
     if(dataweb == 1){
-
+        STREAM_TO_WEB(client_esp);
+    }
+    else if(dataweb == 2){
+        DELETE_DATA_SD();
+    }
+    else{
+        return;
     }
 }

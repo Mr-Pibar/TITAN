@@ -19,12 +19,14 @@
 SETUP_CLASS SETUP_INSTANCE;
 HANDLE_TASK TASK;
 
-//kontainer wifi dan mqtt ada di mqtt.cpp
+WiFiClientSecure ESP_WIFI;
+PubSubClient client(ESP_WIFI);
 
 void setup(){
-  SETUP_INSTANCE.BEGIN();
+  SETUP_INSTANCE.BEGIN(ESP_WIFI, client);
 }
 
 void loop(){
-	TASK.UPDATE_MQTT();
+	TASK.UPDATE_MQTT(client);
+	TASK.FETCH_DATA_WEB(client);
 }

@@ -22,11 +22,11 @@ private:
     void SERIAL_MONITOR();
     void MICRO_SD();
     void WIFI();
-    void MQTT();
+    void MQTT(WiFiClientSecure &ESP_WIFI, PubSubClient &clientESP);
 
 public:
     SETUP_CLASS();
-    void BEGIN();
+    void BEGIN(WiFiClientSecure &ESP_WIFI, PubSubClient &clientESP);
 };
 
 #endif
