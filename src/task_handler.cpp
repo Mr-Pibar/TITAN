@@ -86,13 +86,14 @@ void HANDLE_TASK::UPDATE_MQTT(PubSubClient &client_esp){
 
 void HANDLE_TASK::FETCH_DATA_WEB(PubSubClient &client_esp){
     int dataweb = data_From_Web();
-    if(dataweb == 1){
-        STREAM_TO_WEB(client_esp);
-    }
-    else if(dataweb == 2){
-        DELETE_DATA_SD();
-    }
-    else{
-        return;
+    switch(dataweb){
+        case 1:
+            STREAM_TO_WEB(client_esp);
+            break;
+        case 2:
+            DELETE_DATA_SD();
+            break;
+        default:
+            return;
     }
 }
