@@ -1,7 +1,7 @@
 /*
 	KODE UNTUK PROTOTIPE PRODUK "TITAN"
 	DIBUAT UNTUK KEPENTINGAN LOMBA IOT CHALLENGE UNILA 2026 TIM #SALAM NGOPREK ITB
-	~~~ Rafi Akbar Parwanto, 
+	~~~ Rafi Akbar Parwanto, Ananda Muhammad Arya Rosyadi, Branan Althea Katoppo ~~~
 
 	library yang digunakan:
 	SPI
