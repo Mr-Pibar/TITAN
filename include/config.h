@@ -6,12 +6,16 @@
 #define SCREEN_HEIGHT 64
 #define OLED_RESET -1
 #define OLED_ADDRESS 0x3C
+// SDA 21
+// SCL 22
 
 //config sensor suhu
 #define ONE_WIRE_BUS 4
+// DATA 4 --> KASIH PULLUP
 
 //config sensor tds
 #define TDS_PIN 34
+// DATA 34
 
 //config gps neo
 #define RXD2 16

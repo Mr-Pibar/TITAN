@@ -1,13 +1,19 @@
 #include <task_handler.h>
 
-HANDLE_TASK::HANDLE_TASK(){
-    if(!isCreated){
-        isCreated = true;
-    }
-    else{
-        return;
-    }
-}
+HANDLE_TASK::HANDLE_TASK(Adafruit_SSD1306 &display_in, OneWire &oneWire_in, DallasTemperature &sensors_in, TinyGPSPlus &gps_in, WiFiClientSecure &ESP_WIFI_in, PubSubClient &clientESP_in)
+    :   display(display_in),
+        oneWire(oneWire_in),
+        sensors(sensors_in),
+        gps(gps_in),
+        ESP_WIFI(ESP_WIFI_in),
+        clientESP(clientESP_in){
+            if(!isCreated){
+                isCreated = true;
+            }
+            else{
+                return;
+            }
+        }
 
 void HANDLE_TASK::SERIAL_WRITE_TO_MICRO_SD(String inputdata){
     File fileWrite = SD.open(MICRO_SD_CARD_FILE, FILE_APPEND);
@@ -36,7 +42,7 @@ void HANDLE_TASK::SERIAL_READ_FROM_MICRO_SD(){
     }
 }
 
-void HANDLE_TASK::STREAM_TO_WEB(PubSubClient &client_esp){
+void HANDLE_TASK::STREAM_TO_WEB(){
     if(!SD.exists(MICRO_SD_CARD_FILE)){
         Serial.println(F("[debug] tidak ada database"));
         return;
@@ -55,7 +61,7 @@ void HANDLE_TASK::STREAM_TO_WEB(PubSubClient &client_esp){
         String line = data.readStringUntil('\n');
         line.trim();
         if(line.length() > 0){
-            client_esp.publish(MQTT_TO_WEB, line.c_str());
+            clientESP.publish(MQTT_TO_WEB, line.c_str());
             delay(50);
         }
     }
@@ -77,18 +83,18 @@ void HANDLE_TASK::DELETE_DATA_SD(){
     }
 }
 
-void HANDLE_TASK::UPDATE_MQTT(PubSubClient &client_esp){
-    if(!client_esp.connected()){
-        reconnectMQTT(client_esp);
+void HANDLE_TASK::UPDATE_MQTT(){
+    if(!clientESP.connected()){
+        reconnectMQTT(clientESP);
     }
-    updateMQTT(client_esp);
+    updateMQTT(clientESP);
 }
 
-void HANDLE_TASK::FETCH_DATA_WEB(PubSubClient &client_esp){
+void HANDLE_TASK::FETCH_DATA_WEB(){
     int dataweb = data_From_Web();
     switch(dataweb){
         case 1:
-            STREAM_TO_WEB(client_esp);
+            STREAM_TO_WEB();
             break;
         case 2:
             DELETE_DATA_SD();

@@ -35,10 +35,11 @@
 	By: Nick O'Leary 
 	https://github.com/knolleary/pubsubclient
 
-	Revisi kode ke 1.5
+	Revisi kode ke 1.7
 	1.0 (21/09/2026): Pibar
 	1.1 (23/09/2026): Pibar
 	1.5 (24/09/2026): Pibar
+	1.7 (24/09/2026): Pibar
 
 */
 
@@ -47,17 +48,22 @@
 
 //kontainer primer
 
-SETUP_CLASS SETUP_INSTANCE;
-HANDLE_TASK TASK;
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
+TinyGPSPlus gps;
 
 WiFiClientSecure ESP_WIFI;
 PubSubClient client(ESP_WIFI);
 
+SETUP_CLASS SETUP_INSTANCE(display, oneWire, sensors, ESP_WIFI, client);
+HANDLE_TASK TASK(display, oneWire, sensors, gps, ESP_WIFI, client);
+
 void setup(){
-  SETUP_INSTANCE.BEGIN(ESP_WIFI, client);
+  SETUP_INSTANCE.BEGIN();
 }
 
 void loop(){
-	TASK.UPDATE_MQTT(client);
-	TASK.FETCH_DATA_WEB(client);
+	TASK.UPDATE_MQTT();
+	TASK.FETCH_DATA_WEB();
 }
