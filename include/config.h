@@ -20,6 +20,7 @@
 //config gps neo
 #define RXD2 16
 #define TXD2 17
+#define GPS_INVALID_VALUE -999.0
 
 //config microsd
 #define SD_CS 5
@@ -27,5 +28,9 @@
 // MOSI 23
 // MISO 19
 // SCK 18
+
+//config tombol
+#define BUTTON_ACQUIRE 32
+#define BUTTON_SAVE_TO_MICROSD 33
 
 #endif

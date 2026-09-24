@@ -16,6 +16,10 @@ private:
 
     bool isCreated = false;
 
+    uint64_t counter_data = 0;
+    //{point_id, latitide, longitude, pH, temp, EC/TDS}
+    double sensor_data_primary[6] = {0.0f, GPS_INVALID_VALUE, GPS_INVALID_VALUE, 0.0f, 0.0f, 0.0f};
+
 public:
     HANDLE_TASK(Adafruit_SSD1306 &display_in, OneWire &oneWire_in, DallasTemperature &sensors_in, TinyGPSPlus &gps_in, WiFiClientSecure &ESP_WIFI_in, PubSubClient &clientESP_in);
     void SERIAL_WRITE_TO_MICRO_SD(String inputdata);
@@ -24,7 +28,10 @@ public:
     void FETCH_DATA_WEB();
     void STREAM_TO_WEB();
     void DELETE_DATA_SD();
-
+    void READ_TEMPERATURE();
+    void READ_TDS();
+    void READ_GPS();
+    void READ_ALL_SENSOR();
 };
 
 #endif
