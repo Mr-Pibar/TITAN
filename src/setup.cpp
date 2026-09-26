@@ -30,6 +30,7 @@ void SETUP_CLASS::SERIAL_MONITOR(){
 void SETUP_CLASS::MICRO_SD(){
     if(!SD.begin(SD_CS, SPI, 4000000)){
         Serial.println(F("[debug] Micro SD Module FAIL"));
+        PLAY_ERROR_INVALID();
     }
     else{
         //refersh data di sd card
@@ -70,6 +71,8 @@ void SETUP_CLASS::SENSORS(){
 void SETUP_CLASS::WIFI(){
     Serial.println(F("[debug] Mulai Koneksi Wifi"));
     
+    OLED_WIFI_FAIL(display);
+
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
     while(WiFi.status() != WL_CONNECTED){
@@ -77,10 +80,21 @@ void SETUP_CLASS::WIFI(){
         Serial.print("...");
     }
     Serial.println(WiFi.localIP());
+
+    OLED_WIFI_OKE(display);
 }
 
 void SETUP_CLASS::MQTT(){
     initMQTT(ESP_WIFI, clientESP);
+}
+
+void SETUP_CLASS::PINMODE_ALL(){
+    pinMode(BUTTON_ACQUIRE, INPUT);
+    pinMode(BUTTON_SAVE_TO_MICROSD, INPUT);
+    pinMode(BUZZER_PIN, OUTPUT);
+    pinMode(BATT_SENSE_PIN, INPUT);
+    digitalWrite(BUZZER_PIN, LOW);
+    Serial.println(F("[debug] PINMODE OKE"));
 }
 
 //main setup line
@@ -91,7 +105,12 @@ void SETUP_CLASS::BEGIN(){
     SENSORS();
     WIFI();
     MQTT();
+    PINMODE_ALL();
 
+    PLAY_NOKIA();
+    //PLAY_ODE_JOY();
+    
     Serial.println(F("[debug] Primary setup OKE"));
     delay(1000);
 }
+

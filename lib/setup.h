@@ -13,6 +13,9 @@
 #include <SD.h>
 #include <TinyGPS++.h>
 #include <mqtt.h>
+#include <buzzer.h>
+#include <oled.h>
+#include <functional>
 
 class SETUP_CLASS{
 private:
@@ -32,6 +35,7 @@ private:
     void SENSORS();
     void WIFI();
     void MQTT();
+    void PINMODE_ALL();
 
 public:
     SETUP_CLASS(Adafruit_SSD1306 &display_in, OneWire &oneWire_in, DallasTemperature &sensors_in, WiFiClientSecure &ESP_WIFI_in, PubSubClient &clientESP_in);

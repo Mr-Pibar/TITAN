@@ -24,6 +24,7 @@ void HANDLE_TASK::SERIAL_WRITE_TO_MICRO_SD(String inputdata){
     }
     else{
         Serial.println(F("[debug] Gagal write ke micro sd"));
+        PLAY_ERROR_INVALID();
     }
 }
 
@@ -39,18 +40,21 @@ void HANDLE_TASK::SERIAL_READ_FROM_MICRO_SD(){
     }
     else{
         Serial.println(F("[debug] FAIL READING"));
+        PLAY_ERROR_INVALID();
     }
 }
 
 void HANDLE_TASK::STREAM_TO_WEB(){
     if(!SD.exists(MICRO_SD_CARD_FILE)){
         Serial.println(F("[debug] tidak ada database"));
+        PLAY_ERROR_INVALID();
         return;
     }
     
     File data = SD.open(MICRO_SD_CARD_FILE, FILE_READ);
     if(!data || data.size() == 0){
         Serial.println(F("[debug] ada databse, tidak ada data"));
+        PLAY_ERROR_INVALID();
         if(data){
             data.close();
         }
@@ -77,10 +81,12 @@ void HANDLE_TASK::DELETE_DATA_SD(){
         }
         else{
             Serial.println(F("[debug] database gagal dihapus"));
+            PLAY_ERROR_INVALID();
         }
     }
     else{
         Serial.println(F("[debug] Tidak ada database"));
+        PLAY_ERROR_INVALID();
     }
 }
 
@@ -131,11 +137,12 @@ void HANDLE_TASK::READ_ALL_SENSOR(){
     delay(1000);
     READ_TEMPERATURE();
     READ_TDS();
-    READ_GPS();
     counter_data++; // tes data ke "n"
     sensor_data_primary[0] = counter_data;
     delay(1000);
+}
 
+void HANDLE_TASK::PASS_DATA_TO_SD(){
     //PARSING UNTUK MICRO SD
     char buffer[128];
     snprintf(buffer, sizeof(buffer),
@@ -157,5 +164,22 @@ void HANDLE_TASK::READ_ALL_SENSOR(){
     }
     else{
         Serial.println(F("[debug] Gagal write ke micro sd"));
+        PLAY_ERROR_INVALID();
     }
+}
+
+void HANDLE_TASK::BUZZER(int time){
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(time);
+    digitalWrite(BUZZER_PIN, LOW);
+}
+
+void HANDLE_TASK::SHOW_MAINBOARD(){
+    OLED_SHOW_MAIN_DASHBOARD(display, clientESP.connected(), sensor_data_primary[1], sensor_data_primary[2], sensor_data_primary[3], sensor_data_primary[4], sensor_data_primary[5], battery);
+}
+
+void HANDLE_TASK::READ_BATERY(){
+    int rawADC = analogRead(BATT_SENSE_PIN);
+    int percent = map(rawADC * (3.3 / 4095.0) * ((20.0 + 10.0) / 10.0) * 100, 700 * 100, 840 * 100, 0, 100);
+    battery = constrain(percent, 0 , 100);
 }

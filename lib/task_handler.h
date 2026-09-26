@@ -3,6 +3,7 @@
 
 #include <setup.h>
 #include <mqtt.h>
+#include <buzzer.h>
 
 class HANDLE_TASK{
 private:
@@ -13,6 +14,7 @@ private:
     TinyGPSPlus &gps;
     WiFiClientSecure &ESP_WIFI;
     PubSubClient &clientESP;
+    int battery = 0;
 
     bool isCreated = false;
 
@@ -32,6 +34,10 @@ public:
     void READ_TDS();
     void READ_GPS();
     void READ_ALL_SENSOR();
+    void PASS_DATA_TO_SD();
+    void BUZZER(int time);
+    void SHOW_MAINBOARD();
+    void READ_BATERY();
 };
 
 #endif

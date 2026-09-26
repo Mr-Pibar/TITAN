@@ -32,5 +32,12 @@
 //config tombol
 #define BUTTON_ACQUIRE 32
 #define BUTTON_SAVE_TO_MICROSD 33
+#define DEBOUNCE_DELAY 50
+
+//buzzer
+#define BUZZER_PIN 25
+
+//BATERRY SENSING
+#define BATT_SENSE_PIN 36
 
 #endif

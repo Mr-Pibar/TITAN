@@ -1,5 +1,6 @@
 #include <mqtt.h>
 #include <WiFiClientSecure.h>
+#include <buzzer.h>
 
 int dataweb = 0;
 
@@ -37,6 +38,7 @@ void reconnectMQTT(PubSubClient &clientESP){
         else{
             Serial.print("[debug] Fail: ");
             Serial.println(clientESP.state());
+            PLAY_ERROR_INVALID();
             delay(1000);
         }
     }
