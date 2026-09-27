@@ -149,10 +149,14 @@ void HANDLE_TASK::FETCH_DATA_WEB(){
 }
 
 void HANDLE_TASK::READ_TEMPERATURE(){
+    
+    Serial.println(F("[debug] Membaca suhu..."));
+    
     sensors.requestTemperatures();
     sensor_data_primary[4] = sensors.getTempCByIndex(0);
 }
 void HANDLE_TASK::READ_TDS(){
+    Serial.println(F("[debug] Membaca EC..."));
     sensor_data_primary[5] = analogRead(TDS_PIN) * (3.3 / 4095.0);
 }
 
@@ -170,11 +174,31 @@ void HANDLE_TASK::READ_GPS(){
     }
 }
 
+void HANDLE_TASK::READ_PH(){
+    digitalWrite(PH_DIGITAL, LOW);
+    
+    Serial.println(F("[debug] Membaca PH..."));
+
+    delay(3000);
+    float ADC  = analogRead(PH_ANALOG) * (3.3 / 4095.0);
+    sensor_data_primary[3] = -0.0386 * ADC * 16.830;
+    digitalWrite(PH_DIGITAL, HIGH);
+
+    if(sensor_data_primary[3] < 0.0){
+        sensor_data_primary[3] = 0.0;
+    }
+    if(sensor_data_primary[3] > 14.0){
+        sensor_data_primary[3] = 14.0;
+    }
+
+}
+
 void HANDLE_TASK::READ_ALL_SENSOR(){
 
     delay(1000);
     READ_TEMPERATURE();
     READ_TDS();
+    READ_PH();
 
     counter_data = countEntries() + 1;
     sensor_data_primary[0] = counter_data;

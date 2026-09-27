@@ -34,6 +34,7 @@ public:
     void READ_TDS();
     void READ_GPS();
     void READ_ALL_SENSOR();
+    void READ_PH();
     void PASS_DATA_TO_SD();
     void BUZZER(int time);
     void SHOW_MAINBOARD();

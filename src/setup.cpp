@@ -94,6 +94,12 @@ void SETUP_CLASS::PINMODE_ALL(){
     pinMode(BUZZER_PIN, OUTPUT);
     pinMode(BATT_SENSE_PIN, INPUT);
     digitalWrite(BUZZER_PIN, LOW);
+
+    pinMode(PH_ANALOG, INPUT);
+    pinMode(PH_DIGITAL, OUTPUT);
+
+    digitalWrite(PH_DIGITAL, HIGH);
+
     Serial.println(F("[debug] PINMODE OKE"));
 }
 
