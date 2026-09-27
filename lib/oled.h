@@ -8,5 +8,9 @@ void OLED_WIFI_OKE(Adafruit_SSD1306 &display);
 void OLED_MQTT_RECONNECT(Adafruit_SSD1306 &display);
 void OLED_MQTT_OKE(Adafruit_SSD1306 &display);
 void OLED_SHOW_MAIN_DASHBOARD(Adafruit_SSD1306 &display, bool isMqttConnected, float lat, float lon, float ph, float temp, float tds, int battPct);
+void OLED_STREAMING_DATA(Adafruit_SSD1306 &display);
+void OLED_STREAM_FINISHED(Adafruit_SSD1306 &display);
+void OLED_READING_SOIL(Adafruit_SSD1306 &display);
+void OLED_READING_DONE(Adafruit_SSD1306 &display);
 
 #endif

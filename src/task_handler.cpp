@@ -15,6 +15,38 @@ HANDLE_TASK::HANDLE_TASK(Adafruit_SSD1306 &display_in, OneWire &oneWire_in, Dall
             }
         }
 
+// baca berapa banyak entri di .txt
+int countEntries(){
+// 1. Cek apakah file ada di SD Card
+    if (!SD.exists(MICRO_SD_CARD_FILE)) {
+        Serial.println(F("[debug] File belum dibuat, entri: 0"));
+        return 0; // File belum ada, entri dianggap 0 tanpa menaikkan error/halt
+    }
+
+    // 2. Buka file untuk dibaca
+    File file = SD.open(MICRO_SD_CARD_FILE, FILE_READ);
+    if (!file) {
+        Serial.println(F("[debug] Gagal membuka file SD Card"));
+        return 0;
+    }
+
+    int line_count = 0;
+    while (file.available()) {
+        char ch = file.read();
+        if (ch == '\n') {
+            line_count++;
+        }
+    }
+
+    // Antisipasi baris tunggal tanpa akhiran '\n'
+    if (file.size() > 0 && line_count == 0) {
+        line_count = 1;
+    }
+
+    file.close();
+    return line_count;
+}
+
 void HANDLE_TASK::SERIAL_WRITE_TO_MICRO_SD(String inputdata){
     File fileWrite = SD.open(MICRO_SD_CARD_FILE, FILE_APPEND);
     if(fileWrite){
@@ -68,9 +100,14 @@ void HANDLE_TASK::STREAM_TO_WEB(){
             clientESP.publish(MQTT_TO_WEB, line.c_str());
             delay(50);
         }
+
+        //oled
+        OLED_STREAMING_DATA(display);
     }
     data.close();
     Serial.println(F("[debug] streaming data selesai"));
+
+    OLED_STREAM_FINISHED(display);
 }
 
 void HANDLE_TASK::DELETE_DATA_SD(){
@@ -134,10 +171,12 @@ void HANDLE_TASK::READ_GPS(){
 }
 
 void HANDLE_TASK::READ_ALL_SENSOR(){
+
     delay(1000);
     READ_TEMPERATURE();
     READ_TDS();
-    counter_data++; // tes data ke "n"
+
+    counter_data = countEntries() + 1;
     sensor_data_primary[0] = counter_data;
     delay(1000);
 }
@@ -180,6 +219,9 @@ void HANDLE_TASK::SHOW_MAINBOARD(){
 
 void HANDLE_TASK::READ_BATERY(){
     int rawADC = analogRead(BATT_SENSE_PIN);
-    int percent = map(rawADC * (3.3 / 4095.0) * ((20.0 + 10.0) / 10.0) * 100, 700 * 100, 840 * 100, 0, 100);
+    float vOut = rawADC * (3.3 /4095.0);
+    float vBat = vOut *((20+10) / 10);
+    int vbatMv = (int)(vBat*1000.0);
+    int percent = map(vbatMv, 7000, 8400, 0, 100);
     battery = constrain(percent, 0 , 100);
 }

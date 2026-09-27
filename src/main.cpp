@@ -105,12 +105,15 @@ void loop(){
 
 				Serial.println(F("[debug] mengambil data...."));
 
+				OLED_READING_SOIL(display);
+
 				delay(6000);
 				TASK.READ_ALL_SENSOR();
 				is_data_acquired = true;
 
 				//BUZZER NARIK
 				PLAY_DATA_DONE_ACQUIRED();
+				OLED_READING_DONE(display);
 
 				Serial.println(F("[debug] Data OKE"));
 			}

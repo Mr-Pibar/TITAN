@@ -22,6 +22,10 @@
 #define TXD2 17
 #define GPS_INVALID_VALUE -999.0
 
+//config pH meter
+#define PH_ANALOG 35
+#define PH_DIGITAL 26
+
 //config microsd
 #define SD_CS 5
 // CS GPIO 5
