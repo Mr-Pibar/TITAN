@@ -47,6 +47,7 @@ int countEntries(){
     return line_count;
 }
 
+
 void HANDLE_TASK::SERIAL_WRITE_TO_MICRO_SD(String inputdata){
     File fileWrite = SD.open(MICRO_SD_CARD_FILE, FILE_APPEND);
     if(fileWrite){
@@ -164,13 +165,11 @@ void HANDLE_TASK::READ_GPS(){
     while(Serial2.available() > 0){
         gps.encode(Serial2.read());
     }
-    if(gps.location.isValid()){
+    
+    // Perbarui variabel internal HANYA jika ada koordinat baru yang valid
+    if(gps.location.isUpdated() && gps.location.isValid()){
         sensor_data_primary[1] = gps.location.lat();
         sensor_data_primary[2] = gps.location.lng();
-    }
-    else{
-        sensor_data_primary[1] = GPS_INVALID_VALUE;
-        sensor_data_primary[2] = GPS_INVALID_VALUE;
     }
 }
 
@@ -195,14 +194,12 @@ void HANDLE_TASK::READ_PH(){
 
 void HANDLE_TASK::READ_ALL_SENSOR(){
 
-    delay(1000);
     READ_TEMPERATURE();
     READ_TDS();
     READ_PH();
 
     counter_data = countEntries() + 1;
     sensor_data_primary[0] = counter_data;
-    delay(1000);
 }
 
 void HANDLE_TASK::PASS_DATA_TO_SD(){
