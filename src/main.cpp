@@ -72,6 +72,15 @@ bool is_data_acquired = false;
 
 unsigned long last_debounce_time[2] = {0, 0};
 
+void smartDelay(unsigned long ms) {
+    unsigned long start = millis();
+    do {
+        while (Serial2.available()) {
+            gps.encode(Serial2.read());
+        }
+    } while (millis() - start < ms);
+}
+
 void setup(){
   SETUP_INSTANCE.BEGIN();
 }
@@ -107,7 +116,8 @@ void loop(){
 
 				OLED_READING_SOIL(display);
 
-				delay(6000);
+				smartDelay(6000);
+				TASK.READ_GPS();
 				TASK.READ_ALL_SENSOR();
 				is_data_acquired = true;
 
